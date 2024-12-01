@@ -1,4 +1,4 @@
-const Marker = ({ fill }) => {
+const Marker = ({ fill }: { fill?: string }) => {
   return (
     <svg
       width="8"
