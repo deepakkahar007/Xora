@@ -1,21 +1,44 @@
 import { Link as LinkScroll } from "react-scroll";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 
-const NavLink = ({ title }: { title: string }) => (
-  <LinkScroll
-    to="#"
-    className="base-bold max-lg:h5 cursor-pointer uppercase text-p4 transition-colors duration-500 hover:text-p1 max-lg:my-4"
-  >
-    {title}
-  </LinkScroll>
-);
-
 const Header = () => {
+  const [hasScroll, setHasScroll] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setHasScroll(window.scrollY > 32);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const NavLink = ({ title }: { title: string }) => (
+    <LinkScroll
+      onClick={() => setIsOpen(false)}
+      to={title}
+      offset={-100}
+      spy
+      smooth
+      activeClass="nav-active"
+      className="base-bold max-lg:h5 cursor-pointer uppercase text-p4 transition-colors duration-500 hover:text-p1 max-lg:my-4"
+    >
+      {title}
+    </LinkScroll>
+  );
+
   return (
-    <header className="fixed left-0 top-0 z-50 w-full py-10">
+    <header
+      className={clsx(
+        "fixed left-0 top-0 z-50 w-full py-10 transition-all duration-500 max-lg:py-4",
+        hasScroll && "bg-black-100 py-2 backdrop-blur-[8px]",
+      )}
+    >
       <div className="container flex h-14 items-center max-lg:px-5">
         <a href="#" className="x-2 flex-1 cursor-pointer lg:hidden">
           <img src="/images/xora.svg" alt="logo" />
@@ -27,7 +50,7 @@ const Header = () => {
             isOpen ? "max-lg:opacity-100" : "max-lg:pointer-events-none",
           )}
         >
-          <div className="sidebar-before border-2 max-lg:relative max-lg:flex max-lg:min-h-screen max-lg:flex-col max-lg:overflow-hidden max-lg:p-6 max-md:px-4">
+          <div className="sidebar-before max-lg:relative max-lg:flex max-lg:min-h-screen max-lg:flex-col max-lg:overflow-hidden max-lg:p-6 max-md:px-4">
             <nav className="max-lg:relative max-lg:z-2 max-lg:my-auto">
               <ul className="flex max-lg:block max-lg:px-12">
                 <li className="nav-li">
@@ -38,7 +61,7 @@ const Header = () => {
                 <li className="nav-logo">
                   <LinkScroll
                     to="hero"
-                    offset={-100}
+                    offset={-250}
                     spy
                     smooth
                     className={clsx(
